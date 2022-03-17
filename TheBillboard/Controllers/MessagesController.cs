@@ -18,9 +18,9 @@ public class MessagesController : Controller
         _authorGateway = authorGateway;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var messages = _messageGateway.GetAll();
+        var messages = await _messageGateway.GetAll();
         var authors = _authorGateway.GetAll();
 
         var messagesWithAuthor = messages.Select(message => MatchAuthorToMessage(message, authors));

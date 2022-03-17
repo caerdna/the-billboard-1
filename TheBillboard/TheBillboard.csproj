@@ -6,4 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Npgsql" Version="7.0.0-preview.2" />
+    </ItemGroup>
 </Project>
