@@ -1,20 +1,10 @@
-﻿@model Message
+﻿@model MessageCreationViewModel
 
 @{
-    ViewData["Title"] = "Message detail";
+    ViewData["Title"] = "Message creation";
 }
 
 <div class="text-center" xmlns="http://www.w3.org/1999/html">
     <h1 class="display-4">@ViewData["Title"]</h1>
-    
-    <form class="card" asp-action="Create" asp-controller="Messages" method="post">
-        <div class="form-group">
-            <label for="body">Message</label>
-            <input asp-for="Body" type="text" class="form-control" placeholder="Enter message">
-            <span asp-validation-for="Body" class="text-danger"></span>
-        </div>
-        
-        <button type="submit" class="btn btn-sm btn-outline-primary">Send</button>
-    </form>
-    
+    @await Html.PartialAsync("MessageCreate", Model)
 </div>

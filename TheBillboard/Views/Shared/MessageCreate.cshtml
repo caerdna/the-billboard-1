@@ -1,0 +1,32 @@
+﻿@model MessageCreationViewModel
+
+<form class="card" asp-action="Create" asp-controller="Messages" method="post">
+    <div class="form-group">
+        @if (Model.Message is not null)
+        {
+            <input asp-for="@Model.Message.Id" type="hidden" value="@Model.Message.Id" />
+        }
+        <div>
+            <label for="body">Title</label>
+            <input asp-for="Message.Title" type="text" class="form-control" placeholder="Title">
+            <span asp-validation-for="Message.Title" class="text-danger"></span>
+        </div>
+        <div>
+            <label for="Message.AuthorId">Author</label>
+            <select asp-for="Message.AuthorId" class="form-select">
+                @foreach (var author in Model.Authors)
+                {
+                    <option value="@author.Id">@author.ToString()</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label for="body">Message</label>
+            <textarea asp-for="Message.Body" type="text" class="form-control" placeholder="Enter message"></textarea>
+            <span asp-validation-for="Message.Body" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-sm btn-outline-primary">Send</button>
+</form>
+

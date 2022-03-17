@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Author>
+
+@{
+    ViewData["Title"] = "Lista di Autori";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+
+    <ul class="list-group list-group-flush align-items-center">
+        @foreach (var author in Model)
+        {
+            <li class="list-group-item">
+                <div class="card">
+                    <div class="d-flex flex-column card-body">
+                        <h5 class="card-title">@author.ToString()</h5>
+                        @Html.ActionLink("Remove", "Delete", new { id = author.Id }, new { @class = "btn btn-sm btn-outline-danger w-25" })
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+    @Html.ActionLink("Create New Author", "Create", "Authors", default, new { @class = "btn btn-sm btn-outline-danger w-25" })
+
+</div>

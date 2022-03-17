@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Message>
+﻿@model MessagesIndexViewModel
 
 @{
     ViewData["Title"] = "Messages";
@@ -6,20 +6,23 @@
 
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1>
-    
+    <h3 class="display-4">New Message</h3>
+    @await Html.PartialAsync("MessageCreate", Model.MessageCreationViewModel)
+    <h3 class="display-4">Message List</h3>
     <ul class="list-group list-group-flush align-items-center">
-        @foreach (var message in Model)
+        @foreach (var message in Model.Messages)
         {
             <li class="list-group-item">
                 <div class="card">
                     <div class="d-flex flex-column card-body">
-                        <h5 class="card-title">@message.Title</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@message.Author</h6>
-                        <p class="card-text">@message.Body</p>
-                        @Html.ActionLink("Detail", "Detail", new { id = message.Id }, new { @class = "btn btn-sm btn-outline-primary w-25" })
+                        <h5 class="card-title">@message.Message.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@message.Author.ToString()</h6>
+                        <p class="card-text">@message.Message.Body</p>
+                        @Html.ActionLink("Detail", "Detail", new { id = message.Message.Id }, new { @class = "btn btn-sm btn-outline-primary w-25" })
+                        @Html.ActionLink("Edit", "Create", new { id = message.Message.Id }, new { @class = "btn btn-sm btn-outline-danger w-25" })
                     </div>
                     <div class="d-flex flex-column align-items-end card-footer">
-                        <small class="text-muted"><strong>Updated at: </strong> @message.FormattedUpdatedAt</small>
+                        <small class="text-muted"><strong>Updated at: </strong> @message.Message.FormattedUpdatedAt</small>
                     </div>
                 </div>
             </li>
