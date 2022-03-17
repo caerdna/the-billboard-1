@@ -17,30 +17,19 @@ public class PostgresReader : IReader
         _connectionString = options.Value.DefaultDatabase;
     }
 
-    public async Task<IEnumerable<Message>> QueryAsync()
+    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<NpgsqlDataReader, TEntity> selector)
     {
-        var messages = new HashSet<Message>(); 
+        var messages = new HashSet<TEntity>(); 
         
         await using var connection = new NpgsqlConnection(_connectionString);
-
-        const string query = @"select * from ""Message""";
 
         await using var command = new NpgsqlCommand(query, connection);
 
         await connection.OpenAsync();
         await using var dr = command.ExecuteReader();
-        while (dr.Read())
+        while (await dr.ReadAsync())
         {
-            var message = new Message
-            {
-                Id = dr["id"] as int?,
-                Body = dr["body"].ToString()!,
-                Title = dr["title"].ToString()!,
-                CreatedAt = dr["createdAt"] as DateTime?,
-                UpdatedAt = dr["updatedAt"] as DateTime?,
-                AuthorId = (int) dr["authorId"],
-            };
-
+            var message = selector(dr);
             messages.Add(message);
         }
 
