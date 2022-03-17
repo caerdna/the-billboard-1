@@ -6,7 +6,7 @@ public interface IMessageGateway
 {
     Task<IEnumerable<Message>> GetAll();
     Message? GetById(int id);
-    Message Create(Message message);
+    Task<bool> Create(Message message);
     void Update(Message message);
     void Delete(int id);
 }

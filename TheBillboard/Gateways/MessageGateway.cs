@@ -7,6 +7,7 @@ namespace TheBillboard.Gateways;
 public class MessageGateway : IMessageGateway  
 {
     private readonly IReader _reader;
+    private readonly IWriter _writer;
 
     private ICollection<Message> _messages = new List<Message>()
     {
@@ -15,9 +16,10 @@ public class MessageGateway : IMessageGateway
     };
     private int _nextId = 3;
 
-    public MessageGateway(IReader reader)
+    public MessageGateway(IReader reader, IWriter writer)
     {
         _reader = reader;
+        _writer = writer;
     }
 
     public Task<IEnumerable<Message>> GetAll()
@@ -48,12 +50,9 @@ public class MessageGateway : IMessageGateway
 
     public Message? GetById(int id) => _messages.SingleOrDefault(message => message.Id == id);
 
-    public Message Create(Message message)
+    public Task<bool> Create(Message message)
     {
-        message = message with { Id = _nextId, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now };
-        _nextId++;
-        _messages.Add(message);
-        return message;
+        return _writer.WriteAsync<Message>(string.Empty, default);
     }
 
     public void Delete(int id) =>

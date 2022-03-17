@@ -3,6 +3,7 @@ using TheBillboard.Abstract;
 using TheBillboard.Gateways;
 using TheBillboard.Options;
 using TheBillboard.Readers;
+using TheBillboard.Writers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddSingleton<IStudentGateway, StudentStudentGateway>();
 builder.Services.AddSingleton<IMessageGateway, MessageGateway>();
 builder.Services.AddSingleton<IAuthorGateway, AuthorGateway>();
 builder.Services.AddSingleton<IReader, PostgresReader>();
+builder.Services.AddSingleton<IWriter, PostgresWriter>();
 
 builder.Services.AddControllersWithViews();
 
