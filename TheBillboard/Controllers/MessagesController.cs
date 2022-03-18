@@ -23,17 +23,19 @@ public class MessagesController : Controller
         var messages = await _messageGateway.GetAll();
         var authors = _authorGateway.GetAll();
 
-        var messagesWithAuthor = messages.Select(message => MatchAuthorToMessage(message, authors));
-
         var createViewModel = new MessageCreationViewModel(new Message(), authors);
-        var indexModel = new MessagesIndexViewModel(createViewModel, messagesWithAuthor);
+        var indexModel = new MessagesIndexViewModel(createViewModel, messages);
         return View(indexModel);
     }
 
     [HttpGet]
-    public IActionResult Create(int? id)
+    public async Task<IActionResult> CreateAsync(int? id)
     {
-        var message = id is not null ? _messageGateway.GetById((int)id) : new Message();
+        if(id is null)
+        {
+            return View("Error");
+        }
+        var message = await _messageGateway.GetByIdAsync((int)id);
 
         if (message is null)
         {
@@ -67,17 +69,14 @@ public class MessagesController : Controller
         return RedirectToAction("Index");
     }
 
-    public IActionResult Detail(int id)
+    public async Task<IActionResult> Detail(int id)
     {
-        var message = _messageGateway.GetById(id);
+        var message = await _messageGateway.GetByIdAsync(id);
         if (message is null)
         {
             return View("Error");
         }
-
-        var authors = _authorGateway.GetAll();
-        var messageWithAuthor = MatchAuthorToMessage(message, authors);
-        return View(messageWithAuthor);
+        return View(message);
     }
 
     public IActionResult Delete(int id)

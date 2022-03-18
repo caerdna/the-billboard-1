@@ -8,7 +8,7 @@ using TheBillboard.Options;
 
 namespace TheBillboard.Readers;
 
-public class PostgresReader : IReader
+public class PostgresReader /*: IReader*/
 {
     private readonly string _connectionString;
 

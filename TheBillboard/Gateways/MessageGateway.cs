@@ -6,7 +6,7 @@ using TheBillboard.Models;
 
 namespace TheBillboard.Gateways;
 
-public class MessageGateway : IMessageGateway  
+public class MessageGateway : IMessageGateway
 {
     private readonly IReader _reader;
     private readonly IWriter _writer;
@@ -28,7 +28,7 @@ public class MessageGateway : IMessageGateway
     {
         const string query = @"select * from ""Messages"" join ""Authors"" A on A.""Id"" = ""Messages"".""AuthorId""";
 
-        Message Map(IDataReader dr) 
+        Message Map(IDataReader dr)
         {
             return new Message
             {
@@ -37,7 +37,7 @@ public class MessageGateway : IMessageGateway
                 Title = dr["title"].ToString()!,
                 CreatedAt = dr["createdAt"] as DateTime?,
                 UpdatedAt = dr["updatedAt"] as DateTime?,
-                AuthorId = (int) dr["authorId"],
+                AuthorId = (int)dr["authorId"],
                 Author = new Author
                 {
                     Id = dr["authorId"] as int?,
@@ -46,11 +46,36 @@ public class MessageGateway : IMessageGateway
                 }
             };
         }
-        
+
         return _reader.QueryAsync<Message>(query, Map);
     }
 
-    public Message? GetById(int id) => _messages.SingleOrDefault(message => message.Id == id);
+    public async Task<Message?> GetByIdAsync(int id)
+    {
+        string query = $"SELECT * FROM \"Messages\" JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\" WHERE \"Messages\".\"Id\" = {id}";
+
+        Message Map(IDataReader dr)
+        {
+            return new Message
+            {
+                Id = dr["id"] as int?,
+                Body = dr["body"].ToString()!,
+                Title = dr["title"].ToString()!,
+                CreatedAt = dr["createdAt"] as DateTime?,
+                UpdatedAt = dr["updatedAt"] as DateTime?,
+                AuthorId = (int)dr["authorId"],
+                Author = new Author
+                {
+                    Id = dr["authorId"] as int?,
+                    Name = dr["name"].ToString()!,
+                    Surname = dr["surname"].ToString()!,
+                }
+            };
+        }
+
+        return await _reader.QueryOnceAsync<Message>(query, Map);
+    }
+    //public Message? GetById(int id) => _messages.SingleOrDefault(message => message.Id == id);
 
     public Task<bool> Create(Message message)
     {
