@@ -1,4 +1,6 @@
 ﻿using Npgsql;
+using System.Data;
+using System.Data.SqlClient;
 using TheBillboard.Abstract;
 using TheBillboard.Models;
 
@@ -24,9 +26,9 @@ public class MessageGateway : IMessageGateway
 
     public Task<IEnumerable<Message>> GetAll()
     {
-        const string query = @"select * from ""Message"" join ""Author"" A on A.""Id"" = ""Message"".""AuthorId""";
+        const string query = @"select * from ""Messages"" join ""Authors"" A on A.""Id"" = ""Messages"".""AuthorId""";
 
-        Message Map(NpgsqlDataReader dr)
+        Message Map(IDataReader dr) 
         {
             return new Message
             {
@@ -45,7 +47,7 @@ public class MessageGateway : IMessageGateway
             };
         }
         
-        return _reader.QueryAsync(query, Map);
+        return _reader.QueryAsync<Message>(query, Map);
     }
 
     public Message? GetById(int id) => _messages.SingleOrDefault(message => message.Id == id);
