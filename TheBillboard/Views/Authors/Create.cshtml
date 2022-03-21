@@ -9,8 +9,11 @@
 
     <form class="card" asp-action="Create" asp-controller="Authors" method="post">
         <div class="form-group">
-            <label for="body">New Author</label>
+            <input asp-for="@Model.Id" type="hidden" value="@Model.Id" />
+
+            <label for="Name">Name</label>
             <input asp-for="Name" type="text" class="form-control" placeholder="Name">
+            <label for="Surname">Surname</label>
             <input asp-for="Surname" type="text" class="form-control" placeholder="Surname">
         </div>
         <button type="submit" class="btn btn-sm btn-outline-primary">Create</button>

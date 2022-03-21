@@ -63,7 +63,7 @@ public class MessagesController : Controller
             await _messageGateway.UpdateAsync(message);
         }
 
-        _logger.LogInformation($"Message received: {message.Title}");
+        //_logger.LogInformation($"Message received: {message.Title}");
         return RedirectToAction("Index");
     }
 

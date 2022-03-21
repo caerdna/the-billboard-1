@@ -55,6 +55,16 @@ namespace TheBillboard.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Detail(int id)
+        {
+            var author = await _authorGateway.GetByIdAsync(id);
+            if (author is null)
+            {
+                return View("Error");
+            }
+            return View(author);
+        }
+
         public async Task<IActionResult> Delete(int id)
         {
             await _authorGateway.DeleteAsync(id);

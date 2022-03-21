@@ -19,8 +19,8 @@ public class MessageGateway : IMessageGateway
     {
         const string query =
             "SELECT * "
-            + "FROM \"Messages\" "
-            + "JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\"";
+            + " FROM \"Messages\" "
+            + " JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\"";
         return _reader.QueryAsync<Message>(query, Map);
     }
 
@@ -28,9 +28,9 @@ public class MessageGateway : IMessageGateway
     {
         const string query =
             "SELECT * "
-            + "FROM \"Messages\" "
-            + "JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\" "
-            + "WHERE \"Messages\".\"Id\" = @id";
+            + " FROM \"Messages\" "
+            + " JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\" "
+            + " WHERE \"Messages\".\"Id\" = @id";
         return await _reader.QueryByIdAsync<Message>(query, Map, id);
     }
 
@@ -38,7 +38,7 @@ public class MessageGateway : IMessageGateway
     {
         const string query =
             "INSERT INTO \"Messages\"(\"Title\", \"Body\", \"CreatedAt\", \"UpdatedAt\", \"AuthorId\") "
-            + "VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
+            + " VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
 
         var parameterList = new List<(string, object?)>
         {
@@ -55,8 +55,8 @@ public class MessageGateway : IMessageGateway
     {
         const string query =
             "UPDATE \"Messages\" "
-            + "SET \"Title\" = @Title, \"Body\" = @Body, \"UpdatedAt\" = @UpdatedAt, \"AuthorId\" = @AuthorId "
-            + "WHERE \"Id\" = @id";
+            + " SET \"Title\" = @Title, \"Body\" = @Body, \"UpdatedAt\" = @UpdatedAt, \"AuthorId\" = @AuthorId "
+            + " WHERE \"Id\" = @id";
 
         var parameterList = new List<(string, object?)>
         {
@@ -71,7 +71,9 @@ public class MessageGateway : IMessageGateway
 
     public async Task<bool> DeleteAsync(int id)
     {
-        const string query = "DELETE FROM \"Messages\" WHERE \"Id\" = @id";
+        const string query = "DELETE "
+            + " FROM \"Messages\" "
+            + " WHERE \"Id\" = @id";
 
         var parameterList = new List<(string, object?)>
         {
