@@ -30,21 +30,21 @@ namespace TheBillboard.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Author author)
+        public async Task<IActionResult> Create(Author author)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
 
-            _authorGateway.Create(author);
+            await _authorGateway.CreateAsync(author);
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _authorGateway.Delete(id);
+            await _authorGateway.DeleteAsync(id);
             return RedirectToAction("Index");
         }
 

@@ -9,14 +9,6 @@ public class MessageGateway : IMessageGateway
     private readonly IReader _reader;
     private readonly IWriter _writer;
 
-    //OLD
-    private ICollection<Message> _messages = new List<Message>()
-    {
-        new("Hello  World!", "What A Wonderful World!", 1, default, DateTime.Now.AddHours(-2), DateTime.Now.AddHours(-1), 1),
-        new("Hello  World!", "What A Wonderful World!", 1, default, DateTime.Now, DateTime.Now, 2),
-    };
-    private int _nextId = 3;
-
     public MessageGateway(IReader reader, IWriter writer)
     {
         _reader = reader;

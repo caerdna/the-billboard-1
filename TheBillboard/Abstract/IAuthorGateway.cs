@@ -6,8 +6,8 @@ namespace TheBillboard.Abstract
     {
         Task<IEnumerable<Author>> GetAllAsync();
         Task<Author?> GetByIdAsync(int id);
-
-        Author Create(Author author);
-        void Delete(int id);
+        Task<bool> CreateAsync(Author author);
+        Task<bool> UpdateAsync(Author author);
+        Task<bool> DeleteAsync(int id);
     }
 }

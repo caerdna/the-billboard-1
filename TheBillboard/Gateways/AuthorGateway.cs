@@ -15,37 +15,11 @@ namespace TheBillboard.Gateways
             _writer = writer;
         }
 
-        //OLD
-        private List<Author> _authors = new List<Author>()
-        {
-            new Author("WARNING_1", "", 1),
-            new Author("WARNING_2", "", 2),
-        };
-
-        private int nextId = 3;
-
-        public Author Create(Author author)
-        {
-            author = author with { Id = nextId };
-            _authors.Add(author);
-            nextId++;
-            return (author);
-        }
-
-        public void Delete(int id) =>
-            _authors = _authors
-                .Where(x => x.Id != id)
-                .ToList();
-
-        //public IEnumerable<Author> GetAll() => _authors;
-
         public async Task<IEnumerable<Author>> GetAllAsync()
         {
             const string query = "SELECT * FROM \"Authors\"";
             return await _reader.QueryAsync<Author>(query, Map);
         }
-
-        public Author? GetById(int id) => _authors.SingleOrDefault(x => x.Id == id);
 
         public async Task<Author?> GetByIdAsync(int id)
         {
@@ -53,16 +27,43 @@ namespace TheBillboard.Gateways
             return await _reader.QueryByIdAsync<Author>(query, Map, id);
         }
 
-        //public void Update(Author author)
-        //{
-        //    _authors = _authors
-        //        .Where(x => x.Id != message.Id)
-        //        .ToList();
+        public async Task<bool> CreateAsync(Author author)
+        {
+            const string query = "INSERT INTO \"Authors\"(\"Name\", \"Surname\", \"CreatedAt\", \"UpdatedAt\") VALUES (@Name, @Surname, @CreatedAt, @UpdatedAt)";
 
-        //    message = message with { UpdatedAt = DateTime.Now };
+            var parameterList = new List<(string, object?)>
+        {
+            ("@Name", author.Name),
+            ("@Surname", author.Surname),
+            ("@CreatedAt", DateTime.Now),
+            ("@UpdatedAt", DateTime.Now)
+        };
+            return await _writer.WriteAsync<Author>(query, author, parameterList);
+        }
 
-        //    _messages.Add(message);
-        //}
+        public async Task<bool> UpdateAsync(Author author)
+        {
+            const string query = "UPDATE \"Authors\" SET \"Name\" = @Name, \"Surname\" = @Surname, \"UpdatedAt\" = @UpdatedAt WHERE \"Id\" = @id";
+
+            var parameterList = new List<(string, object?)>
+        {
+            ("@Name", author.Name),
+            ("@Surname", author.Surname),
+            ("@UpdatedAt", DateTime.Now),
+            ("@Id", author.Id)
+        };
+            return await _writer.WriteAsync<Author>(query, author, parameterList);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            const string query = "DELETE FROM \"Authors\" WHERE \"Id\" = @id";
+            var parameterList = new List<(string, object?)>
+        {
+            ("@Id", id)
+        };
+            return await _writer.WriteAsync<Author>(query, new Author(), parameterList);
+        }
 
         private Author Map(IDataReader dr)
         {
@@ -71,8 +72,8 @@ namespace TheBillboard.Gateways
                 Id = dr["id"] as int?,
                 Name = dr["name"].ToString()!,
                 Surname = dr["surname"].ToString()!,
-                //CreatedAt = dr["createdAt"] as DateTime?,
-                //UpdatedAt = dr["updatedAt"] as DateTime?,
+                CreatedAt = dr["createdAt"] as DateTime?,
+                UpdatedAt = dr["updatedAt"] as DateTime?,
             };
         }
 
