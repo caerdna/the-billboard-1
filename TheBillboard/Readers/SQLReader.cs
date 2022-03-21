@@ -74,6 +74,7 @@ public class SQLReader : IReader
         command.Parameters.Add(idParameter);
 
         await connection.OpenAsync();
+        //await command.PrepareAsync();
         await using var dr = command.ExecuteReader();
         //Only read one row
         if (await dr.ReadAsync())

@@ -1,6 +1,4 @@
-﻿using Npgsql;
-using System.Data;
-using System.Data.SqlClient;
+﻿using System.Data;
 using TheBillboard.Abstract;
 using TheBillboard.Models;
 
@@ -39,7 +37,17 @@ public class MessageGateway : IMessageGateway
 
     public Task<bool> Create(Message message)
     {
-        return _writer.WriteAsync<Message>(string.Empty, default);
+        const string query = "INSERT INTO \"Messages\"(\"Title\", \"Body\", \"CreatedAt\", \"UpdatedAt\", \"AuthorId\") VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
+
+        var parameterList = new List<(string, object?)>
+        {
+            ("@Title", message.Title),
+            ("@Body", message.Body),
+            ("@CreatedAt", DateTime.Now),
+            ("@UpdatedAt", DateTime.Now),
+            ("@AuthorId", message.AuthorId)
+        };
+        return _writer.WriteAsync<Message>(query, message, parameterList);
     }
 
     public void Delete(int id) =>

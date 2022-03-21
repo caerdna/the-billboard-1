@@ -4,7 +4,7 @@ using TheBillboard.Options;
 
 namespace TheBillboard.Writers;
 
-public class PostgresWriter : IWriter
+public class PostgresWriter
 {
     private readonly string _connectionString;
 
