@@ -44,7 +44,6 @@ public class SQLReader : IReader
         TEntity? message = default ;
 
         await using var connection = new SqlConnection(_connectionString);
-
         await using var command = new SqlCommand(query, connection);
 
         await connection.OpenAsync();

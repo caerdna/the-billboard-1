@@ -60,7 +60,7 @@ public class MessagesController : Controller
         }
         else
         {
-            _messageGateway.Update(message);
+            await _messageGateway.Update(message);
         }
 
         _logger.LogInformation($"Message received: {message.Title}");

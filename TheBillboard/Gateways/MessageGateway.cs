@@ -55,15 +55,19 @@ public class MessageGateway : IMessageGateway
             .Where(message => message.Id != id)
             .ToList();
 
-    public void Update(Message message)
+    public Task<bool> Update(Message message)
     {
-        _messages = _messages
-            .Where(m => m.Id != message.Id)
-            .ToList();
+        const string query = "UPDATE \"Messages\" SET \"Title\" = @Title, \"Body\" = @Body, \"UpdatedAt\" = @UpdatedAt, \"AuthorId\" = @AuthorId WHERE \"Id\" = @id";
 
-        message = message with { UpdatedAt = DateTime.Now };
-
-        _messages.Add(message);
+        var parameterList = new List<(string, object?)>
+        {
+            ("@Title", message.Title),
+            ("@Body", message.Body),
+            ("@UpdatedAt", DateTime.Now),
+            ("@AuthorId", message.AuthorId),
+            ("@Id", message.Id)
+        };
+        return _writer.WriteAsync<Message>(query, message, parameterList);
     }
 
     private Message Map(IDataReader dr)
