@@ -4,12 +4,10 @@ namespace TheBillboard.Abstract
 {
     public interface IAuthorGateway
     {
-        public IEnumerable<Author> GetAll();
-
-        Author? GetById(int id);
+        Task<IEnumerable<Author>> GetAllAsync();
+        Task<Author?> GetByIdAsync(int id);
 
         Author Create(Author author);
-
         void Delete(int id);
     }
 }

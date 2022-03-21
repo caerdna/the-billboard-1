@@ -20,8 +20,8 @@ public class MessagesController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var messages = await _messageGateway.GetAll();
-        var authors = _authorGateway.GetAll();
+        var messages = await _messageGateway.GetAllAsync();
+        var authors = await _authorGateway.GetAllAsync();
 
         var createViewModel = new MessageCreationViewModel(new Message(), authors);
         var indexModel = new MessagesIndexViewModel(createViewModel, messages);
@@ -31,34 +31,32 @@ public class MessagesController : Controller
     [HttpGet]
     public async Task<IActionResult> CreateAsync(int? id)
     {
-        if(id is null)
-        {
-            return View("Error");
-        }
-        var message = await _messageGateway.GetByIdAsync((int)id);
+        Message message;
 
-        if (message is null)
+        if (id is null)
         {
-            return View("Error");
+            message = new Message();
         }
         else
         {
-            var viewModel = new MessageCreationViewModel(message, _authorGateway.GetAll());
-            return View(viewModel);
+            message = await _messageGateway.GetByIdAsync((int)id) ?? new Message();
         }
+
+        var viewModel = new MessageCreationViewModel(message, await _authorGateway.GetAllAsync());
+        return View(viewModel);
     }
 
     [HttpPost]
-    public IActionResult Create(Message message)
+    public async Task<IActionResult> Create(Message message)
     {
         if (!ModelState.IsValid)
         {
-            return View(new MessageCreationViewModel(message, _authorGateway.GetAll()));
+            return View(new MessageCreationViewModel(message, await _authorGateway.GetAllAsync()));
         }
 
         if (message.Id == default)
         {
-            _messageGateway.Create(message);
+            await _messageGateway.Create(message);
         }
         else
         {
@@ -85,6 +83,4 @@ public class MessagesController : Controller
         return RedirectToAction("Index");
     }
 
-    private MessageWithAuthor MatchAuthorToMessage(Message message, IEnumerable<Author> authors)
-        => new MessageWithAuthor(message, authors.FirstOrDefault(a => a.Id == message.AuthorId, new Author("Unknown Author")));
 }

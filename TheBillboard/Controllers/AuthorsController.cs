@@ -13,9 +13,20 @@ namespace TheBillboard.Controllers
             _authorGateway = authorGateway;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_authorGateway.GetAll());
+            return View(await _authorGateway.GetAllAsync());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create(int? id)
+        {
+            if (id is not null)
+            {
+                return View(await _authorGateway.GetByIdAsync((int)id));
+            }
+
+            return View();
         }
 
         [HttpPost]
@@ -29,16 +40,6 @@ namespace TheBillboard.Controllers
             _authorGateway.Create(author);
 
             return RedirectToAction("Index");
-        }
-
-        public IActionResult Create(int? id)
-        {
-            if (id is not null)
-            {
-                return View(_authorGateway.GetById((int)id));
-            }
-
-            return View();
         }
 
         public IActionResult Delete(int id)
