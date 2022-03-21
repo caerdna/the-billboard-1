@@ -33,8 +33,8 @@ public class MessageGateway : IMessageGateway
 
     public async Task<Message?> GetByIdAsync(int id)
     {
-        string query = $"SELECT * FROM \"Messages\" JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\" WHERE \"Messages\".\"Id\" = {id}";
-        return await _reader.QueryOnceAsync<Message>(query, Map);
+        const string query = $"SELECT * FROM \"Messages\" JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\" WHERE \"Messages\".\"Id\" = @id";
+        return await _reader.QueryByIdAsync<Message>(query, Map, id);
     }
 
     public Task<bool> Create(Message message)

@@ -49,8 +49,8 @@ namespace TheBillboard.Gateways
 
         public async Task<Author?> GetByIdAsync(int id)
         {
-            string query = $"SELECT * FROM \"Authors\" WHERE \"Id\" = {id}";
-            return await _reader.QueryOnceAsync<Author>(query, Map);
+            string query = $"SELECT * FROM \"Authors\" WHERE \"Id\" = @id";
+            return await _reader.QueryByIdAsync<Author>(query, Map, id);
         }
 
         //public void Update(Author author)
