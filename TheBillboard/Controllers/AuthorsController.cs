@@ -15,18 +15,24 @@ namespace TheBillboard.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _authorGateway.GetAllAsync());
+            return View(await _authorGateway.GetAllAsync().ToListAsync());
         }
 
         [HttpGet]
         public async Task<IActionResult> Create(int? id)
         {
-            if (id is not null)
+            Author author;
+
+            if (id is null)
             {
-                return View(await _authorGateway.GetByIdAsync((int)id));
+                author = new Author();
+            }
+            else
+            {
+                author = await _authorGateway.GetByIdAsync((int)id) ?? new Author();
             }
 
-            return View();
+            return View(author);
         }
 
         [HttpPost]
@@ -34,10 +40,17 @@ namespace TheBillboard.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(author);
             }
 
-            await _authorGateway.CreateAsync(author);
+            if (author.Id is null)
+            {
+                await _authorGateway.CreateAsync(author);
+            }
+            else
+            {
+                await _authorGateway.UpdateAsync(author);
+            }
 
             return RedirectToAction("Index");
         }

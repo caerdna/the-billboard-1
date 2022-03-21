@@ -1,16 +1,14 @@
-﻿@model Message
+﻿@model Author
 
 @{
-    ViewData["Title"] = "Message detail";
+    ViewData["Title"] = "Author detail";
 }
 
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1>
     <div class="card">
         <div class="d-flex flex-column card-body">
-            <h5 class="card-title">@Model.Title</h5>
-            <h6 class="card-subtitle mb-2 text-muted">@Model.Author.ToString()</h6>
-            <p class="card-text">@Model.Body</p>
+            <h5 class="card-title">@Model.ToString()</h5>
             @Html.ActionLink("Edit", "Create", new { id = Model.Id }, new { @class = "btn btn-sm btn-outline-primary w-25" })
             @Html.ActionLink("Delete", "Delete", new { id = Model.Id }, new { @class = "btn btn-sm btn-outline-danger w-25" })
 

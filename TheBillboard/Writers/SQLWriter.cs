@@ -19,13 +19,12 @@ namespace TheBillboard.Writers
             await using var connection = new SqlConnection(_connectionString);
             await using var command = new SqlCommand(query, connection);
 
-            foreach (var parameter in parameterList)
+            foreach (var (name, value) in parameterList)
             {
-                command.Parameters.Add(new SqlParameter(parameter.name, parameter.value));
+                command.Parameters.Add(new SqlParameter(name, value));
             }
 
-            await connection.OpenAsync();
-            //await command.PrepareAsync();
+            await connection.OpenAsync();           
             await command.ExecuteNonQueryAsync();
 
             return true;

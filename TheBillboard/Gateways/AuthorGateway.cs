@@ -15,21 +15,27 @@ namespace TheBillboard.Gateways
             _writer = writer;
         }
 
-        public async Task<IEnumerable<Author>> GetAllAsync()
+        public IAsyncEnumerable<Author> GetAllAsync()
         {
-            const string query = "SELECT * FROM \"Authors\"";
-            return await _reader.QueryAsync<Author>(query, Map);
+            const string query =
+                   "SELECT *"
+                + "FROM \"Authors\"";
+             return  _reader.QueryAsync<Author>(query, Map);
         }
 
         public async Task<Author?> GetByIdAsync(int id)
         {
-            string query = $"SELECT * FROM \"Authors\" WHERE \"Id\" = @id";
+            string query =
+                "SELECT *"
+                + "FROM \"Authors\" WHERE \"Id\" = @id";
             return await _reader.QueryByIdAsync<Author>(query, Map, id);
         }
 
         public async Task<bool> CreateAsync(Author author)
         {
-            const string query = "INSERT INTO \"Authors\"(\"Name\", \"Surname\", \"CreatedAt\", \"UpdatedAt\") VALUES (@Name, @Surname, @CreatedAt, @UpdatedAt)";
+            const string query =
+                "INSERT INTO \"Authors\"(\"Name\", \"Surname\", \"CreatedAt\", \"UpdatedAt\")"
+                + "VALUES (@Name, @Surname, @CreatedAt, @UpdatedAt)";
 
             var parameterList = new List<(string, object?)>
         {
@@ -43,7 +49,10 @@ namespace TheBillboard.Gateways
 
         public async Task<bool> UpdateAsync(Author author)
         {
-            const string query = "UPDATE \"Authors\" SET \"Name\" = @Name, \"Surname\" = @Surname, \"UpdatedAt\" = @UpdatedAt WHERE \"Id\" = @id";
+            const string query =
+                "UPDATE \"Authors\""
+                + "SET \"Name\" = @Name, \"Surname\" = @Surname, \"UpdatedAt\" = @UpdatedAt"
+                + "WHERE \"Id\" = @id";
 
             var parameterList = new List<(string, object?)>
         {
@@ -57,7 +66,10 @@ namespace TheBillboard.Gateways
 
         public async Task<bool> DeleteAsync(int id)
         {
-            const string query = "DELETE FROM \"Authors\" WHERE \"Id\" = @id";
+            const string query =
+                "DELETE "
+                + "FROM \"Authors\""
+                + " WHERE \"Id\" = @id";
             var parameterList = new List<(string, object?)>
         {
             ("@Id", id)

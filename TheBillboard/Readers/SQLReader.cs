@@ -17,31 +17,31 @@ public class SQLReader : IReader
         _connectionString = options.Value.DefaultDatabase;
     }
 
-    public async Task<IEnumerable<TEntity>> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector)
+    public async IAsyncEnumerable<TEntity> QueryAsync<TEntity>(string query, Func<IDataReader, TEntity> selector)
     {
-        var messages = new HashSet<TEntity>(); 
-        
+
+
         await using var connection = new SqlConnection(_connectionString);
 
-        await using SqlCommand? command = new SqlCommand(query, connection);
+        await using SqlCommand? command = new(query, connection);
 
         await connection.OpenAsync();
         await using var dr = command.ExecuteReader();
         while (await dr.ReadAsync())
         {
             var message = selector(dr);
-            messages.Add(message);
+            yield return message;
         }
 
         await connection.CloseAsync();
         await connection.DisposeAsync();
+
         
-        return messages;
     }
 
     public async Task<TEntity?> QueryOnceAsync<TEntity>(string query, Func<IDataReader, TEntity> selector)
     {
-        TEntity? message = default ;
+        TEntity? message = default;
 
         await using var connection = new SqlConnection(_connectionString);
         await using var command = new SqlCommand(query, connection);

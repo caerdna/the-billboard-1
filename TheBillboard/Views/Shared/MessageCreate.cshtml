@@ -4,8 +4,9 @@
     <div class="form-group">
         @if (Model.Message is not null)
         {
-            <input asp-for="@Model.Message.Id" type="hidden" value="@Model.Message.Id" />
-        }
+
+
+            <input asp-for="@Model.Message.Id" type="hidden" value="@Model.Message.Id" />}
         <div>
             <label for="body">Title</label>
             <input asp-for="Message.Title" type="text" class="form-control" placeholder="Title">
@@ -16,6 +17,8 @@
             <select asp-for="Message.AuthorId" class="form-select">
                 @foreach (var author in Model.Authors)
                 {
+
+
                     <option value="@author.Id">@author.ToString()</option>
                 }
             </select>

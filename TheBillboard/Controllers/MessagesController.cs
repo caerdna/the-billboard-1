@@ -20,16 +20,16 @@ public class MessagesController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var messages = await _messageGateway.GetAllAsync();
-        var authors = await _authorGateway.GetAllAsync();
-
+        var messages = await _messageGateway.GetAllAsync().ToListAsync();
+        var authors = await _authorGateway.GetAllAsync().ToListAsync();
+        
         var createViewModel = new MessageCreationViewModel(new Message(), authors);
         var indexModel = new MessagesIndexViewModel(createViewModel, messages);
         return View(indexModel);
     }
 
     [HttpGet]
-    public async Task<IActionResult> CreateAsync(int? id)
+    public async Task<IActionResult> Create(int? id)
     {
         Message message;
 
@@ -42,7 +42,7 @@ public class MessagesController : Controller
             message = await _messageGateway.GetByIdAsync((int)id) ?? new Message();
         }
 
-        var viewModel = new MessageCreationViewModel(message, await _authorGateway.GetAllAsync());
+        var viewModel = new MessageCreationViewModel(message, await _authorGateway.GetAllAsync().ToListAsync());
         return View(viewModel);
     }
 
@@ -51,10 +51,10 @@ public class MessagesController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(new MessageCreationViewModel(message, await _authorGateway.GetAllAsync()));
+            return View(new MessageCreationViewModel(message, await _authorGateway.GetAllAsync().ToListAsync()));
         }
 
-        if (message.Id == default)
+        if (message.Id is null)
         {
             await _messageGateway.CreateAsync(message);
         }

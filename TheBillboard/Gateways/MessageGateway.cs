@@ -15,21 +15,30 @@ public class MessageGateway : IMessageGateway
         _writer = writer;
     }
 
-    public async Task<IEnumerable<Message>> GetAllAsync()
+    public IAsyncEnumerable<Message> GetAllAsync()
     {
-        const string query = @"select * from ""Messages"" join ""Authors"" A on A.""Id"" = ""Messages"".""AuthorId""";
-        return await _reader.QueryAsync<Message>(query, Map);
+        const string query =
+            "SELECT * "
+            + "FROM \"Messages\" "
+            + "JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\"";
+        return _reader.QueryAsync<Message>(query, Map);
     }
 
     public async Task<Message?> GetByIdAsync(int id)
     {
-        const string query = $"SELECT * FROM \"Messages\" JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\" WHERE \"Messages\".\"Id\" = @id";
+        const string query =
+            "SELECT * "
+            + "FROM \"Messages\" "
+            + "JOIN \"Authors\" A ON A.\"Id\" = \"Messages\".\"AuthorId\" "
+            + "WHERE \"Messages\".\"Id\" = @id";
         return await _reader.QueryByIdAsync<Message>(query, Map, id);
     }
 
     public async Task<bool> CreateAsync(Message message)
     {
-        const string query = "INSERT INTO \"Messages\"(\"Title\", \"Body\", \"CreatedAt\", \"UpdatedAt\", \"AuthorId\") VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
+        const string query =
+            "INSERT INTO \"Messages\"(\"Title\", \"Body\", \"CreatedAt\", \"UpdatedAt\", \"AuthorId\") "
+            + "VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
 
         var parameterList = new List<(string, object?)>
         {
@@ -44,7 +53,10 @@ public class MessageGateway : IMessageGateway
 
     public async Task<bool> UpdateAsync(Message message)
     {
-        const string query = "UPDATE \"Messages\" SET \"Title\" = @Title, \"Body\" = @Body, \"UpdatedAt\" = @UpdatedAt, \"AuthorId\" = @AuthorId WHERE \"Id\" = @id";
+        const string query =
+            "UPDATE \"Messages\" "
+            + "SET \"Title\" = @Title, \"Body\" = @Body, \"UpdatedAt\" = @UpdatedAt, \"AuthorId\" = @AuthorId "
+            + "WHERE \"Id\" = @id";
 
         var parameterList = new List<(string, object?)>
         {
