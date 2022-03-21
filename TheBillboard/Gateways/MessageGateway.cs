@@ -35,7 +35,7 @@ public class MessageGateway : IMessageGateway
         return await _reader.QueryByIdAsync<Message>(query, Map, id);
     }
 
-    public Task<bool> Create(Message message)
+    public async Task<bool> CreateAsync(Message message)
     {
         const string query = "INSERT INTO \"Messages\"(\"Title\", \"Body\", \"CreatedAt\", \"UpdatedAt\", \"AuthorId\") VALUES (@Title, @Body, @CreatedAt, @UpdatedAt, @AuthorId)";
 
@@ -47,15 +47,10 @@ public class MessageGateway : IMessageGateway
             ("@UpdatedAt", DateTime.Now),
             ("@AuthorId", message.AuthorId)
         };
-        return _writer.WriteAsync<Message>(query, message, parameterList);
+        return await _writer.WriteAsync<Message>(query, message, parameterList);
     }
 
-    public void Delete(int id) =>
-        _messages = _messages
-            .Where(message => message.Id != id)
-            .ToList();
-
-    public Task<bool> Update(Message message)
+    public async Task<bool> UpdateAsync(Message message)
     {
         const string query = "UPDATE \"Messages\" SET \"Title\" = @Title, \"Body\" = @Body, \"UpdatedAt\" = @UpdatedAt, \"AuthorId\" = @AuthorId WHERE \"Id\" = @id";
 
@@ -67,8 +62,21 @@ public class MessageGateway : IMessageGateway
             ("@AuthorId", message.AuthorId),
             ("@Id", message.Id)
         };
-        return _writer.WriteAsync<Message>(query, message, parameterList);
+        return await _writer.WriteAsync<Message>(query, message, parameterList);
     }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        const string query = "DELETE FROM \"Messages\" WHERE \"Id\" = @id";
+
+        var parameterList = new List<(string, object?)>
+        {
+            ("@Id", id)
+        };
+        return await _writer.WriteAsync<Message>(query, new Message(), parameterList);
+    }
+
+
 
     private Message Map(IDataReader dr)
     {

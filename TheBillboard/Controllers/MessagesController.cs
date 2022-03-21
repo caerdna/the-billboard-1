@@ -56,11 +56,11 @@ public class MessagesController : Controller
 
         if (message.Id == default)
         {
-            await _messageGateway.Create(message);
+            await _messageGateway.CreateAsync(message);
         }
         else
         {
-            await _messageGateway.Update(message);
+            await _messageGateway.UpdateAsync(message);
         }
 
         _logger.LogInformation($"Message received: {message.Title}");
@@ -77,9 +77,9 @@ public class MessagesController : Controller
         return View(message);
     }
 
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        _messageGateway.Delete(id);
+        await _messageGateway.DeleteAsync(id);
         return RedirectToAction("Index");
     }
 
